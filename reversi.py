@@ -263,7 +263,7 @@ while True:
             else:
                 dibujarTablero(tableroPrincipal)
             mostrarPuntajes(baldosaJugador, baldosaComputadora)
-            jugada = obtenerJugadaJugador(tableroPrincipal, baldosaJugador)
+            jugada = obtenerJugadaComputadora(tableroPrincipal, baldosaJugador)
             if jugada == 'salir':
                 print('¡Gracias por jugar!')
                 sys.exit() # terminar el programa
