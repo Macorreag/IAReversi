@@ -249,58 +249,38 @@ while True:
     # Reiniciar el tablero y la partida.
     tableroPrincipal = obtenerNuevoTablero()
     reiniciarTablero(tableroPrincipal)
-    baldosaJugador, baldosaComputadora = ingresarBaldosaJugador()
-    mostrarPistas = False
-    turno = quiénComienza()
-    print(turno + ' comenzará.')
+    if quiénComienza() == 'jugador':
+        turno = 'X'
+    else:
+        turno = 'O'
+    print('La ' + turno + ' comenzará.')
 
     while True:
-        if turno == 'El jugador':
-            # Turno del jugador
-            if mostrarPistas:
-                tableroConJugadasVálidas = obtenerTableroConJugadasVálidas(tableroPrincipal, baldosaJugador)
-                dibujarTablero(tableroConJugadasVálidas)
-            else:
-                dibujarTablero(tableroPrincipal)
-            mostrarPuntajes(baldosaJugador, baldosaComputadora)
-            jugada = obtenerJugadaComputadora(tableroPrincipal, baldosaJugador)
-            if jugada == 'salir':
-                print('¡Gracias por jugar!')
-                sys.exit() # terminar el programa
-            elif jugada == 'pistas':
-                mostrarPistas = not mostrarPistas
-                continue
-            else:
-                hacerJugada(tableroPrincipal, baldosaJugador, jugada[0], jugada[1])
+        dibujarTablero(tableroPrincipal)
+        puntajes = obtenerPuntajeTablero(tableroPrincipal)
+        print('X ha obtenido %s puntos. O ha obtenido %s puntos.' % (puntajes['X'], puntajes['O']))
+        input('Presiona Enter para continuar.')
 
-            if obtenerJugadasVálidas(tableroPrincipal, baldosaComputadora) == []:
-                break
-            else:
-                turno = 'La computadora'
-
+        if turno == 'X':
+            # Turno de X.
+            otraBaldosa = 'O'
+            x, y = obtenerJugadaComputadora(tableroPrincipal, 'X')
+            hacerJugada(tableroPrincipal, 'X', x, y)
         else:
-            # Turno de la computadora
-            dibujarTablero(tableroPrincipal)
-            mostrarPuntajes(baldosaJugador, baldosaComputadora)
-            input('Presiona enter para ver la jugada de la computadora.')
-            x, y = obtenerJugadaComputadora(tableroPrincipal, baldosaComputadora)
-            hacerJugada(tableroPrincipal, baldosaComputadora, x, y)
-
-            if obtenerJugadasVálidas(tableroPrincipal, baldosaJugador) == []:
-                break
-            else:
-                turno = 'El jugador'
-
+            # Turno de O.
+            otraBaldosa = 'X'
+            x, y = obtenerJugadaComputadora(tableroPrincipal, 'O')
+            hacerJugada(tableroPrincipal, 'O', x, y)
+        
+        if obtenerJugadasVálidas(tableroPrincipal, otraBaldosa) == []:
+            break
+        else:
+            turno = otraBaldosa
+        
     # Mostrar el puntaje final.
     dibujarTablero(tableroPrincipal)
     puntajes = obtenerPuntajeTablero(tableroPrincipal)
-    print('X ha obtenido %s puntos. O ha obtenido %s puntos.' % (puntajes['X'], puntajes['O']))
-    if puntajes[baldosaJugador] > puntajes[baldosaComputadora]:
-        print('¡Has vencido a la computadora por %s puntos! ¡Felicitaciones!' % (puntajes[baldosaJugador] - puntajes[baldosaComputadora]))
-    elif puntajes[baldosaJugador] < puntajes[baldosaComputadora]:
-        print('Has perdido. La computadora te ha vencido por %s puntos.' % (puntajes[baldosaComputadora] - puntajes[baldosaJugador]))
-    else:
-        print('¡Ha sido un empate!')
+    print('X ha obtenido %s puntos. O ha obtenido %s puntos.' %(puntajes['X'], puntajes['O']))
 
     if not jugarDeNuevo():
-        break
+        sys.exit()
