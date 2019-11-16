@@ -95,11 +95,11 @@ def estáEnTablero(x, y):
 
 def obtenerTableroConJugadasVálidas(tablero, baldosa):
     # Devuelve un nuevo tablero, marcando con "." las jugadas válidas que el jugador puede realizar.
-    réplicaTablero = obtenerCopiaTablero(tablero)
+    replicaTablero = obtenerCopiaTablero(tablero)
 
-    for x, y in obtenerJugadasVálidas(réplicaTablero, baldosa):
-        réplicaTablero[x][y] = '.'
-    return réplicaTablero
+    for x, y in obtenerJugadasVálidas(replicaTablero, baldosa):
+        replicaTablero[x][y] = '.'
+    return replicaTablero
 
 
 def obtenerJugadasVálidas(tablero, baldosa):
@@ -141,8 +141,8 @@ def ingresarBaldosaJugador():
         return ['O', 'X']
 
 
-def quiénComienza():
-    # Elije al azar qué jugador comienza.
+def quienComienza():
+    # Elije al azar que jugador comienza.
     if random.randint(0, 1) == 0:
         return 'La computadora'
     else:
@@ -171,13 +171,13 @@ def hacerJugada(tablero, baldosa, comienzox, comienzoy):
 
 def obtenerCopiaTablero(tablero):
     # Duplica la lista del tablero y devuelve el duplicado.
-    réplicaTablero = obtenerNuevoTablero()
+    replicaTablero = obtenerNuevoTablero()
 
     for x in range(8):
         for y in range(8):
-            réplicaTablero[x][y] = tablero[x][y]
+            replicaTablero[x][y] = tablero[x][y]
 
-    return réplicaTablero
+    return replicaTablero
 
 
 def esEsquina(x, y):
@@ -227,9 +227,9 @@ def obtenerJugadaComputadora(tablero, baldosaComputadora):
     # Recorrer la lista de jugadas posibles y recordar la que da el mejor puntaje
     mejorPuntaje = -1
     for x, y in jugadasPosibles:
-        réplicaTablero = obtenerCopiaTablero(tablero)
-        hacerJugada(réplicaTablero, baldosaComputadora, x, y)
-        puntaje = obtenerPuntajeTablero(réplicaTablero)[baldosaComputadora]
+        replicaTablero = obtenerCopiaTablero(tablero)
+        hacerJugada(replicaTablero, baldosaComputadora, x, y)
+        puntaje = obtenerPuntajeTablero(replicaTablero)[baldosaComputadora]
         if puntaje > mejorPuntaje:
             mejorJugada = [x, y]
             mejorPuntaje = puntaje
@@ -245,22 +245,22 @@ def mostrarPuntajes(baldosaJugador, baldosaComputadora):
 
 print('¡Bienvenido a Reversi!')
 
-while True:
+victoriasx = 0
+victoriaso = 0
+empates = 0
+numPartidas = int(input('Ingresa el número de partidas a jugar: '))
+
+for partida in range(numPartidas):
+    print('Partida #%s:' % (partida), end=' ')
     # Reiniciar el tablero y la partida.
     tableroPrincipal = obtenerNuevoTablero()
     reiniciarTablero(tableroPrincipal)
-    if quiénComienza() == 'jugador':
+    if quienComienza() == 'jugador':
         turno = 'X'
     else:
         turno = 'O'
-    print('La ' + turno + ' comenzará.')
-
+    
     while True:
-        dibujarTablero(tableroPrincipal)
-        puntajes = obtenerPuntajeTablero(tableroPrincipal)
-        print('X ha obtenido %s puntos. O ha obtenido %s puntos.' % (puntajes['X'], puntajes['O']))
-        input('Presiona Enter para continuar.')
-
         if turno == 'X':
             # Turno de X.
             otraBaldosa = 'O'
@@ -271,16 +271,25 @@ while True:
             otraBaldosa = 'X'
             x, y = obtenerJugadaComputadora(tableroPrincipal, 'O')
             hacerJugada(tableroPrincipal, 'O', x, y)
-        
+
         if obtenerJugadasVálidas(tableroPrincipal, otraBaldosa) == []:
             break
         else:
             turno = otraBaldosa
-        
-    # Mostrar el puntaje final.
-    dibujarTablero(tableroPrincipal)
-    puntajes = obtenerPuntajeTablero(tableroPrincipal)
-    print('X ha obtenido %s puntos. O ha obtenido %s puntos.' %(puntajes['X'], puntajes['O']))
 
-    if not jugarDeNuevo():
-        sys.exit()
+        # Mostrar el puntaje final. 
+        puntajes = obtenerPuntajeTablero(tableroPrincipal)
+        print('X ha obtenido %s puntos. O ha obtenido %s puntos.' %(puntajes['X'], puntajes['O']))
+        
+        if puntajes['X'] > puntajes['O']:
+            victoriasx += 1
+        elif puntajes['X'] < puntajes['O']:
+            victoriaso += 1
+        else:
+            empates += 1
+        
+numPartidas = float(numPartidas)
+porcentajex = round(((victoriasx / numPartidas) * 100), 2)
+porcentajeo = round(((victoriaso / numPartidas) * 100), 2)
+porcentajeempate = round(((empates / numPartidas) * 100), 2)
+print('X ha ganado %s partidas (%s%%), O ha ganado %s partidas (%s%%),empates en %s partidas (%s%%) sobre un total de %s partidas.' % (victoriasx,porcentajex, victoriaso, porcentajeo, empates, porcentajeempate, numPartidas))
