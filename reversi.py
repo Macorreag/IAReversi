@@ -281,12 +281,12 @@ for partida in range(numPartidas):
         puntajes = obtenerPuntajeTablero(tableroPrincipal)
         print('X ha obtenido %s puntos. O ha obtenido %s puntos.' %(puntajes['X'], puntajes['O']))
         
-        if puntajes['X'] > puntajes['O']:
-            victoriasx += 1
-        elif puntajes['X'] < puntajes['O']:
-            victoriaso += 1
-        else:
-            empates += 1
+    if puntajes['X'] > puntajes['O']:
+        victoriasx += 1
+    elif puntajes['X'] < puntajes['O']:
+        victoriaso += 1
+    else:
+        empates += 1
         
 numPartidas = float(numPartidas)
 porcentajex = round(((victoriasx / numPartidas) * 100), 2)
