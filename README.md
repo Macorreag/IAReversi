@@ -13,4 +13,4 @@ El juego _reversi.py_ fue obtenido del libro  [inventwithpython CAP 15](https://
 
 Este juego se inicia con:
 
-´python3 reversi.py´
+`python3 reversi.py`
