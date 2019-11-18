@@ -2,42 +2,46 @@
 
 import random
 import sys
+import os
+
+size = 3
 
 def dibujarTablero(tablero):
     # Esta funcion dibuja el tablero recibido. Devuelve None.
-    LINEAH = '  +---+---+---+---+---+---+---+---+'
-    LINEAV = '  |   |   |   |   |   |   |   |   |'
 
-    print('    1   2   3   4   5   6   7   8')
+    str1 = ""
+    print (" " + str1.join(['   ' + str(x) for x in range(size)]))
+    str2 = ""
+    LINEAH = "  +" + str2.join(['---+' + str1 for _ in range(size)])
+
+
     print(LINEAH)
-    for y in range(8):
-        print(LINEAV)
+    for y in range(size):
         print(y+1, end=' ')
-        for x in range(8):
+        for x in range(size):
             print('| %s' % (tablero[x][y]), end=' ')
         print('|')
-        print(LINEAV)
         print(LINEAH)
 
 
 def reiniciarTablero(tablero):
     # Deja en blanco el tablero recibido como argumento, excepto la posición inicial.
-    for x in range(8):
-        for y in range(8):
+    for x in range(size):
+        for y in range(size):
             tablero[x][y] = ' '
 
     # Piezas iniciales:
-    tablero[3][3] = 'X'
-    tablero[3][4] = 'O'
-    tablero[4][3] = 'O'
-    tablero[4][4] = 'X'
+    tablero[int(size/2 - 1)][int(size/2 - 1 )] = 'X'
+    tablero[int(size/2 - 1)][int(size/2)] = 'O'
+    tablero[int(size/2)][int(size/2 - 1)] = 'O'
+    tablero[int(size/2)][int(size/2)] = 'X'
 
 
 def obtenerNuevoTablero():
     # Crea un tablero nuevo, vacío.
     tablero = []
-    for i in range(8):
-        tablero.append([' '] * 8)
+    for i in range(size):
+        tablero.append([' '] * size)
 
     return tablero
 
@@ -90,7 +94,7 @@ def esJugadaVálida(tablero, baldosa, comienzox, comienzoy):
 
 def estáEnTablero(x, y):
     # Devuelve True si las coordenadas se encuentran dentro del tablero
-    return x >= 0 and x <= 7 and y >= 0 and y <=7
+    return x >= 0 and x < size and y >= 0 and y < size
 
 
 def obtenerTableroConJugadasVálidas(tablero, baldosa):
@@ -106,19 +110,20 @@ def obtenerJugadasVálidas(tablero, baldosa):
     # Devuelve una lista de listas [x,y] de jugadas válidas para el jugador en el tablero dado.
     jugadasVálidas = []
 
-    for x in range(8):
-        for y in range(8):
+    for x in range(size):
+        for y in range(size):
             if esJugadaVálida(tablero, baldosa, x, y) != False:
                 jugadasVálidas.append([x, y])
     return jugadasVálidas
 
+clear = lambda: os.system('clear')
 
 def obtenerPuntajeTablero(tablero):
     # Determina el puntaje contando las piezas. Devuelve un diccionario con claves 'X' y 'O'.
     puntajex = 0
     puntajeo = 0
-    for x in range(8):
-        for y in range(8):
+    for x in range(size):
+        for y in range(size):
             if tablero[x][y] == 'X':
                 puntajex += 1
             if tablero[x][y] == 'O':
@@ -173,8 +178,8 @@ def obtenerCopiaTablero(tablero):
     # Duplica la lista del tablero y devuelve el duplicado.
     replicaTablero = obtenerNuevoTablero()
 
-    for x in range(8):
-        for y in range(8):
+    for x in range(size):
+        for y in range(size):
             replicaTablero[x][y] = tablero[x][y]
 
     return replicaTablero
@@ -188,7 +193,8 @@ def esEsquina(x, y):
 def obtenerJugadaJugador(tablero, baldosaJugador):
     # Permite al jugador tipear su jugada.
     # Devuelve la jugada como [x, y] (o devuelve las cadenas 'pistas' o 'salir')
-    CIFRAS1A8 = '1 2 3 4 5 6 7 8'.split()
+    
+    CIFRAS1A8 = [str(x) for x in range(size)]
     while True:
         print('Ingresa tu jugada, salir para terminar el juego, o pistas para activar/desactivar las pistas.')
         jugada = input().lower()
@@ -241,7 +247,16 @@ def mostrarPuntajes(baldosaJugador, baldosaComputadora):
     puntajes = obtenerPuntajeTablero(tableroPrincipal)
     print('Tienes %s puntos. La computadora tiene %s puntos.' % (puntajes[baldosaJugador], puntajes[baldosaComputadora]))
 
+#Definir el tamaño del tablero 
 
+clear = lambda: os.system('clear')
+
+size = int(input('Ingresa el tamaño del tablero: ')) 
+clear()
+
+while (size < 8 or size%2 != 0):
+    size = int(input('Ingresa el tamaño del tablero: '))
+    clear()
 
 print('¡Bienvenido a Reversi!')
 
@@ -261,6 +276,7 @@ for partida in range(numPartidas):
         turno = 'O'
     
     while True:
+        dibujarTablero(tableroPrincipal)
         if turno == 'X':
             # Turno de X.
             otraBaldosa = 'O'
